@@ -3,6 +3,7 @@ import pygame
 import time
 import mido
 import sys
+import re
 
 
 def _play(args):
@@ -12,7 +13,7 @@ def _play(args):
     pygame.mixer.music.load(filename)
 
     try:
-        print(f'Playing {filename}... Press CTRL+C to interrupt')
+        print(f'Playing {filename}... Press CTRL+C to interrupt', flush=True)
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
             time.sleep(0.25)
@@ -122,6 +123,81 @@ def _notes(args):
         print(note.format(format))
 
 
+def _convert(args):
+    table = {
+        'c': 60,
+        'c#': 61,
+        'd-': 61,
+        'd': 62,
+        'd#': 63,
+        'e-': 63,
+        'e': 64,
+        'f': 65,
+        'f#': 66,
+        'g-': 66,
+        'g': 67,
+        'g#': 68,
+        'a-': 68,
+        'a': 69,
+        'a#': 70,
+        'b-': 70,
+        'b': 71,
+        'C': 72,
+        'C#': 73,
+        'D-': 73,
+        'D': 74,
+        'D#': 75,
+        'E-': 75,
+        'E': 76,
+        'F': 77,
+        'F#': 78,
+        'G-': 78,
+        'G': 79,
+        'G#': 80,
+        'A-': 80,
+        'A': 81,
+        'A#': 82,
+        'B-': 82,
+        'B': 83
+    }
+
+    def parse(string):
+        def parse_single(part):
+            match = re.fullmatch(r'((?:[A-Ga-g][#-]?)+)(\d*)', part)
+
+            if not match:
+                print(f'Could not parse {part}')
+                sys.exit(-1)
+
+            notes = [ table[x] for x in re.findall(r'[a-gA-G][#-]?', match.group(1)) ]
+            duration = int(match.group(2) or '4')
+
+            return (notes, duration)
+
+        return [ parse_single(x) for x in string.split(' ') ]
+
+
+    filename = args.filename
+    data = parse(args.notes)
+    beat_duration = args.beat_duration
+    velocity = args.velocity
+
+    midi = mido.MidiFile()
+    track = mido.MidiTrack()
+    midi.tracks.append(track)
+
+    for (notes, duration) in data:
+        for note in notes:
+            track.append(mido.Message('note_on', velocity=velocity, time=0, note=note))
+
+        track.append(mido.Message('note_off', velocity=0, time=beat_duration * 4 // duration, note=notes[0]))
+
+        for note in notes[1:]:
+            track.append(mido.Message('note_off', velocity=0, time=0, note=note))
+
+    midi.save(filename)
+
+
 
 def _create_command_line_arguments_parser():
     '''
@@ -146,6 +222,13 @@ def _create_command_line_arguments_parser():
     subparser = subparsers.add_parser('play', help='plays MIDI file')
     subparser.add_argument('filename', help='MIDI file name')
     subparser.set_defaults(func=_play)
+
+    subparser = subparsers.add_parser('convert', help='creates a MIDI file')
+    subparser.add_argument('filename', help='MIDI file name')
+    subparser.add_argument('notes', help='notes')
+    subparser.add_argument('--beat', help='Duration of one beat', default=600, type=int, dest='beat_duration')
+    subparser.add_argument('--velocity', help='Note velocity', default=100, type=int)
+    subparser.set_defaults(func=_convert)
 
     return parser
 
