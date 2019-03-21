@@ -20,7 +20,7 @@ def _play(args):
         pygame.mixer.music.stop()
 
 
-def _show(args):
+def _dump(args):
     filename = args.filename
     format = args.format
     filter = args.filter
@@ -57,12 +57,12 @@ def _create_command_line_arguments_parser():
     parser.set_defaults(func=lambda args: parser.print_help())
     subparsers = parser.add_subparsers(help='sub-command help')
 
-    subparser = subparsers.add_parser('show', help='prints MIDI file contents')
+    subparser = subparsers.add_parser('dump', help='prints MIDI file contents')
     subparser.add_argument('filename', help='MIDI file name')
     subparser.add_argument('--format', help='Format', default='[%x] dt=%T %d')
     subparser.add_argument('--filter', help='Filter', default='*')
     subparser.add_argument('--no-events', help="Don't print events", action='store_const', const='', dest='filter')
-    subparser.set_defaults(func=_show)
+    subparser.set_defaults(func=_dump)
 
     subparser = subparsers.add_parser('play', help='plays MIDI file')
     subparser.add_argument('filename', help='MIDI file name')
