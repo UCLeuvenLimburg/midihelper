@@ -37,3 +37,17 @@ FILTER determines which events are shown.
 ```bash
 $ midihelper play FILENAME
 ```
+
+### Convert
+
+Converts notes to midi file.
+
+```bash
+$ midihelper convert FILENAME NOTES [--beat BEAT] [--velocity VELOCITY]
+```
+
+Example:
+
+```text
+$ midihelper convert test.mid "E8 Eb8 E8 Eb8 E8 b8 D8 C8 a"
+```
