@@ -1,7 +1,23 @@
 import argparse
+import pygame
+import time
 import mido
 import sys
 
+
+def _play(args):
+    filename = args.filename
+
+    pygame.mixer.init(44100, -16, 2, 1024)
+    pygame.mixer.music.load(filename)
+
+    try:
+        print(f'Playing {filename}... Press CTRL+C to interrupt')
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            time.sleep(0.25)
+    finally:
+        pygame.mixer.music.stop()
 
 
 def _show(args):
@@ -43,6 +59,10 @@ def _create_command_line_arguments_parser():
     subparser.add_argument('--format', help='Format', default='[%x] dt=%T %d')
     subparser.add_argument('--filter', help='Filter', default='*')
     subparser.set_defaults(func=_show)
+
+    subparser = subparsers.add_parser('play', help='plays MIDI file')
+    subparser.add_argument('filename', help='MIDI file name')
+    subparser.set_defaults(func=_play)
 
     return parser
 
