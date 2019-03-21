@@ -16,10 +16,10 @@ $ pip install -e .
 
 ## Usage
 
-### Showing MIDI file contents
+### Dumping raw MIDI file contents
 
 ```bash
-$ midihelper show FILENAME [--format FORMAT] [--filter FILTER]
+$ midihelper dump FILENAME [--format FORMAT] [--filter FILTER]
 ```
 
 FORMAT determines the format for events.
