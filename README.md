@@ -16,7 +16,7 @@ $ pip install -e .
 
 ## Usage
 
-### Dumping raw MIDI file contents
+### Viewing MIDI file contents
 
 ```bash
 $ midihelper dump FILENAME [--format FORMAT] [--filter FILTER]
@@ -31,6 +31,19 @@ FORMAT determines the format for events.
 * `%d` associated data
 
 FILTER determines which events are shown.
+
+```bash
+$ midihelper notes FILENAME [--format FORMAT]
+```
+
+FORMAT placeholders:
+
+* `%c` channel
+* `%n` note
+* `%s` start
+* `%e` end
+* `%d` duration
+* `%i` instrument
 
 ### Playing a MIDI File
 
