@@ -31,3 +31,9 @@ FORMAT determines the format for events.
 * `%d` associated data
 
 FILTER determines which events are shown.
+
+### Playing a MIDI File
+
+```bash
+$ midihelper play FILENAME
+```
