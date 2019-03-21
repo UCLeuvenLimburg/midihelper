@@ -49,7 +49,6 @@ def _create_command_line_arguments_parser():
     '''
     Creates parsers and subparsers
     '''
-    # Top level parser
     parser = argparse.ArgumentParser(prog='midi')
     parser.set_defaults(func=lambda args: parser.print_help())
     subparsers = parser.add_subparsers(help='sub-command help')
