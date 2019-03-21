@@ -32,7 +32,11 @@ def _show(args):
         else:
             return message.type in filter.split(',')
 
-    for track in mid.tracks:
+    print(f'MIDI file contains {len(mid.tracks)} track(s)')
+
+    for track_index, track in enumerate(mid.tracks):
+        print(f"Track {track_index + 1} contains {len(track)} events")
+
         for message in track:
             if should_be_printed(message):
                 result = format
@@ -57,6 +61,7 @@ def _create_command_line_arguments_parser():
     subparser.add_argument('filename', help='MIDI file name')
     subparser.add_argument('--format', help='Format', default='[%x] dt=%T %d')
     subparser.add_argument('--filter', help='Filter', default='*')
+    subparser.add_argument('--no-events', help="Don't print events", action='store_const', const='', dest='filter')
     subparser.set_defaults(func=_show)
 
     subparser = subparsers.add_parser('play', help='plays MIDI file')
